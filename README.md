@@ -34,7 +34,7 @@ Because this uses a decoupled full-stack architecture, you will need two separat
 * Python 3.x installed
 * Node.js and npm installed
 
-### 1. Backend Setup (FastAPI & ML Engine)
+###  Backend Setup (FastAPI & ML Engine)
 Open your first terminal and clone the repository:
 ```bash
 git clone [https://github.com/Akki-jaiswal/ai-fraud-detection-system.git](https://github.com/Akki-jaiswal/ai-fraud-detection-system.git)
