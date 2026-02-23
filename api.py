@@ -1,48 +1,47 @@
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from Fraud_Detection_System import AdvancedFraudDetector
 
-# Initialize API and Detector
-app = FastAPI(
-    title="Fraud Detection AI API",
-    description="Real-time hybrid fraud detection engine",
-    version="3.0"
+app = FastAPI(title="Fraud Detection API", version="3.0")
+
+# 1. BULLETPROOF CORS: Allows React to talk to FastAPI
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"], 
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
-# Load the model once when the server starts
 print("Loading ML Model...")
 detector = AdvancedFraudDetector()
 
-# Define what the incoming JSON request should look like
 class MessageRequest(BaseModel):
     text: str
 
-@app.get("/")
-def health_check():
-    """Simple health check endpoint"""
-    return {
-        "status": "online", 
-        "message": "Fraud Detection API v3.0 is running. Go to /docs to test it!"
-    }
-
-@app.post("/api/v1/analyze")
+# 2. EXACT ROUTE MATCH: Matches the React fetch request
+@app.post("/analyze")
 def analyze_text(req: MessageRequest):
-    """Analyze a text message for fraud indicators"""
     if not req.text.strip():
         raise HTTPException(status_code=400, detail="Text cannot be empty")
     
-    # Run text through your existing hybrid engine
     result = detector.analyze(req.text)
     
     if not result:
         raise HTTPException(status_code=500, detail="Analysis failed")
 
-    # Format and return the JSON response
     return {
         "text": result['text'],
         "risk_level": result['risk_level'],
         "risk_score": round(result['combined_score'], 2),
-        "is_fraud": result['should_alert'],
-        "keywords_found": result['keywords_found'],
-        "ai_fraud_probability": round(result['ai_result']['fraud_probability'] * 100, 2) if result['ai_result'] else 0.0
+        "is_fraud": result['should_alert']
     }
+
+import os
+import uvicorn
+
+# This tells the cloud provider to bind to the correct port
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 8000))
+    uvicorn.run(app, host="0.0.0.0", port=port)
