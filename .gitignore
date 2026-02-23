@@ -1,0 +1,12 @@
+# Python caches
+__pycache__/
+*.py[cod]
+
+# Project specific directories (created by the script)
+data/
+models/
+logs/
+
+# Virtual environments
+venv/
+env/
