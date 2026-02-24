@@ -2,6 +2,9 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from Fraud_Detection_System import AdvancedFraudDetector, Config
+import os
+import uvicorn
+
 
 app = FastAPI(title="Fraud Detection API", version="3.0")
 
@@ -37,9 +40,6 @@ def analyze_text(req: MessageRequest):
         "risk_score": round(result['combined_score'], 2),
         "is_fraud": result['should_alert']
     }
-
-import os
-import uvicorn
 
 # This tells the cloud provider to bind to the correct port
 if __name__ == "__main__":
