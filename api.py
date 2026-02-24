@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from Fraud_Detection_System import AdvancedFraudDetector
+from Fraud_Detection_System import AdvancedFraudDetector, Config
 
 app = FastAPI(title="Fraud Detection API", version="3.0")
 
